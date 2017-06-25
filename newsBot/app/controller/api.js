@@ -7,7 +7,6 @@ var properties = require('../config/properties.js')
 var User = require('../model/user.js');
 
 
-
 exports.tokenVerification = function(req, res) {
 	if (req.query['hub.verify_token'] === properties.facebook_challenge) {
     res.send(req.query['hub.challenge']);
@@ -29,25 +28,25 @@ exports.handleMessage = function(req, res) {
 		  	// Handle a text message from this sender
         switch(normalizedText) {
           case 'sneaker':
-          getArticles(fashionEndpoints[2], function(err, articles){
-            sendGenericMessage(senderID, articles);
+          getArticles(properties.endpoints[2], function(err, articles){
+            sendGenericMessage(sender, articles);
           });
-          break;
+            break;
 
           case 'lifestyle':
-            getArticles(fashionEndpoints[0], function(err, articles){
-              sendGenericMessage(senderID, articles);
+            getArticles(properties.endpoints[0], function(err, articles){
+              sendGenericMessage(sender, articles);
             });
             break;
 
           case 'fashion':
-            getArticles(fashionEndpoints[1], function(err, articles){
-              sendGenericMessage(senderID, articles);
+            getArticles(properties.endpoints[1], function(err, articles){
+              sendGenericMessage(sender, articles);
             });
             break;
 
           case 'HELP':
-            sendTextMessage(senderID, "Gib 'sneaker', 'fashion' oder 'lifestyle' ein um nice Artikel darüber zu bekommen! Oder abonniere sogar tägliche News mit /abonnieren | deabonniere mit /deabonnieren und rufe den Status mit /abostatus ab!");
+            sendTextMessage(sender, "Gib 'sneaker', 'fashion' oder 'lifestyle' ein um nice Artikel darüber zu bekommen! Oder abonniere sogar tägliche News mit /abonnieren | deabonniere mit /deabonnieren und rufe den Status mit /abostatus ab!");
             break;
 
           case "/abonnieren":
@@ -78,7 +77,115 @@ exports.handleMessage = function(req, res) {
     }
 	res.sendStatus(200);
 }
+function sendGenericMessage(recipientId, articles) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "generic",
+          elements: [{
+            title: articles[0].title,
+            subtitle: articles[0].published.toString(),
+            item_url: articles[0].link,               
+            buttons: [{
+              type: "web_url",
+              url: articles[0].link,
+              title: "Öffne den Artikel"
+            }, {
+              type: "web_url",
+              url: "http://fvshamm.de",
+              title: "Besuche das Stein!"
+            }],
+          }, {
+            title: articles[1].title,
+            subtitle: articles[1].published.toString(),
+            item_url: articles[1].link,               
+            buttons: [{
+              type: "web_url",
+              url: articles[1].link,
+              title: "Öffne den Artikel"
+            }, {
+              type: "web_url",
+              url: "http://fvshamm.de",
+              title: "Besuche das Stein!"
+            }],
+          }, {
+            title: articles[2].title,
+            subtitle: articles[2].published.toString(),
+            item_url: articles[2].link,               
+            buttons: [{
+              type: "web_url",
+              url: articles[2].link,
+              title: "Öffne den Artikel"
+            }, {
+              type: "web_url",
+              url: "http://fvshamm.de",
+              title: "Besuche das Stein!"
+            }],
+          }, {
+            title: articles[3].title,
+            subtitle: articles[3].published.toString(),
+            item_url: articles[3].link,               
+            buttons: [{
+              type: "web_url",
+              url: articles[3].link,
+              title: "Öffne den Artikel"
+            }, {
+              type: "web_url",
+              url: "http://fvshamm.de",
+              title: "Besuche das Stein!"
+            }],
+          }, {
+            title: articles[4].title,
+            subtitle: articles[4].published.toString(),
+            item_url: articles[4].link,               
+            buttons: [{
+              type: "web_url",
+              url: articles[4].link,
+              title: "Öffne den Artikel"
+            }, {
+              type: "web_url",
+              url: "http://fvshamm.de",
+              title: "Besuche das Stein!"
+            }],
+          }, {
+            title: articles[5].title,
+            subtitle: articles[5].published.toString(),
+            item_url: articles[5].link,               
+            buttons: [{
+              type: "web_url",
+              url: articles[5].link,
+              title: "Öffne den Artikel"
+            }, {
+              type: "web_url",
+              url: "http://fvshamm.de",
+              title: "Besuche das Stein!"
+            }],
+          }, {
+            title: articles[6].title,
+            subtitle: articles[6].published.toString(),
+            item_url: articles[6].link,               
+            buttons: [{
+              type: "web_url",
+              url: articles[6].link,
+              title: "Öffne den Artikel"
+            }, {
+              type: "web_url",
+              url: "http://fvshamm.de",
+              title: "Besuche das Stein!"
+            }],
+          }]
+        }
+      }
+    }
+  };  
 
+  callSendAPI(messageData);
+}
 function subscribeUser(id) {
   // create a new user called chris
   var newUser = new User({
@@ -199,29 +306,6 @@ function _sendArticleMessage(sender, article) {
   }
   
   callSendAPI(messageData)
-}
-function receivedMessage(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
-  var timeOfMessage = event.timestamp;
-  var message = event.message;
-
-  var messageId = message.mid;
-
-  var messageText = message.text;
-  var messageAttachments = message.attachments;
-
-  if (messageText) {
-
-    switch (messageText) {
-      
-
-      default:
-        sendTextMessage(senderID, "Du hast nach: "+messageText+" gesucht, aber wenn du wissen willst, was ich kann dann gib HELP ein.");
-    }
-  } else if (messageAttachments) {
-    sendTextMessage(senderID, "Message with attachment received");
-  }
 }
 
 exports.sendArticleMessage = function(sender, article) {

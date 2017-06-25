@@ -5,7 +5,6 @@ var properties = require('../config/properties.js')
 
 var User = require('../model/user.js');
 
-
 exports.tokenVerification = function(req, res) {
 	if (req.query['hub.verify_token'] === properties.facebook_challenge) {
     res.send(req.query['hub.challenge']);

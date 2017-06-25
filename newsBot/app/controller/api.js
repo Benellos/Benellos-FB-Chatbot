@@ -28,13 +28,35 @@ exports.handleMessage = function(req, res) {
         
 		  	// Handle a text message from this sender
         switch(normalizedText) {
-          case "/subscribe":
+          case 'sneaker':
+          getArticles(fashionEndpoints[2], function(err, articles){
+            sendGenericMessage(senderID, articles);
+          });
+          break;
+
+          case 'lifestyle':
+            getArticles(fashionEndpoints[0], function(err, articles){
+              sendGenericMessage(senderID, articles);
+            });
+            break;
+
+          case 'fashion':
+            getArticles(fashionEndpoints[1], function(err, articles){
+              sendGenericMessage(senderID, articles);
+            });
+            break;
+
+          case 'HELP':
+            sendTextMessage(senderID, "Gib 'sneaker', 'fashion' oder 'lifestyle' ein um nice Artikel darüber zu bekommen! Oder abonniere sogar tägliche News mit /abonnieren | deabonniere mit /deabonnieren und rufe den Status mit /abostatus ab!");
+            break;
+
+          case "/abonnieren":
             subscribeUser(sender)
             break;
-          case "/unsubscribe":
+          case "/deabonnieren":
             unsubscribeUser(sender)
             break;
-          case "/subscribestatus":
+          case "/abonnierstatus":
             subscribeStatus(sender)
             break;
           default:
@@ -66,10 +88,10 @@ function subscribeUser(id) {
   // call the built-in save method to save to the database
   User.findOneAndUpdate({fb_id: newUser.fb_id}, {fb_id: newUser.fb_id}, {upsert:true}, function(err, user) {
     if (err) {
-      sendTextMessage(id, "There wan error subscribing you for daily articles");
+      sendTextMessage(id, "Da war ein Fehler beim abonnieren!");
     } else {
       console.log('User saved successfully!');
-      sendTextMessage(newUser.fb_id, "You've been subscribed!")
+      sendTextMessage(newUser.fb_id, "Du hast abonniert!")
     }
   });
 }
@@ -78,10 +100,9 @@ function unsubscribeUser(id) {
   // call the built-in save method to save to the database
   User.findOneAndRemove({fb_id: id}, function(err, user) {
     if (err) {
-      sendTextMessage(id, "There wan error unsubscribing you for daily articles");
+      sendTextMessage(id, "Da war ein Fehler beim abonnieren!");
     } else {
-      console.log('User deleted successfully!');
-      sendTextMessage(id, "You've been unsubscribed!")
+      sendTextMessage(id, "Du hast deabonniert!")
     }
   });
 }
@@ -193,27 +214,7 @@ function receivedMessage(event) {
   if (messageText) {
 
     switch (messageText) {
-      case 'sneaker':
-        getArticles(fashionEndpoints[2], function(err, articles){
-          sendGenericMessage(senderID, articles);
-        });
-        break;
-
-      case 'lifestyle':
-        getArticles(fashionEndpoints[0], function(err, articles){
-          sendGenericMessage(senderID, articles);
-        });
-        break;
-
-      case 'fashion':
-        getArticles(fashionEndpoints[1], function(err, articles){
-          sendGenericMessage(senderID, articles);
-        });
-        break;
-
-      case 'HELP':
-        sendTextMessage(senderID, "Gib 'sneaker', 'fashion' oder 'lifestyle' ein um nice Artikel darüber zu bekommen!");
-        break;
+      
 
       default:
         sendTextMessage(senderID, "Du hast nach: "+messageText+" gesucht, aber wenn du wissen willst, was ich kann dann gib HELP ein.");

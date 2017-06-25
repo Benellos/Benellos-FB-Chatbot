@@ -4,11 +4,14 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+
 var mongoose = require('mongoose');
  
+var schedule = require('node-schedule');
+var User = require('./app/model/user');
+var apiController = require('./app/controller/api');
 
 var index = require('./app/routes/index');
-var users = require('./app/routes/users');
 var webhook = require('./app/routes/webhook');
 
 

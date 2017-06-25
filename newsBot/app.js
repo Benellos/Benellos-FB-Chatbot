@@ -6,7 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var mongoose = require('mongoose');
- 
+var users = require('./app/routes/users');
+
 var schedule = require('node-schedule');
 var User = require('./app/model/user');
 var apiController = require('./app/controller/api');

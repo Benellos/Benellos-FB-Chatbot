@@ -25,19 +25,19 @@ exports.handleMessage = function(req, res) {
         normalizedText = text.toLowerCase().replace(' ', '');
         
         switch(normalizedText) {
-          case properties.chat_keywords[0]:
+          case properties.chat_keywords[0].toString():
           getArticlesOld(properties.endpoints[2], function(err, articles){
             sendGenericMessage(sender, articles);
           });
             break;
 
-          case properties.chat_keywords[2]:
+          case properties.chat_keywords[2].toString():
             getArticlesOld(properties.endpoints[0], function(err, articles){
               sendGenericMessage(sender, articles);
             });
             break;
 
-          case properties.chat_keywords[1]:
+          case properties.chat_keywords[1].toString():
             getArticlesOld(properties.endpoints[1], function(err, articles){
               sendGenericMessage(sender, articles);
             });

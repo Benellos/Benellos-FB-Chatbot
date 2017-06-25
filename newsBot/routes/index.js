@@ -7,7 +7,10 @@ var token = "EAAbZA6M9RPGgBAMZBKTxTGznEeeA4voEDRW9WB9NU5NFHGnjWg3kngOKnd6ZAouaam
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
-
+router.get('/',function(req,res){
+  res.sendFile(path.join(__dirname+'/index.html'));
+  //__dirname : It will resolve to your project folder.
+});
 router.get('/webhook/', function(req, res) {
   if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === "hello_token_success") {

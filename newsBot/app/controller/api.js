@@ -27,25 +27,25 @@ exports.handleMessage = function(req, res) {
         
 		  	// Handle a text message from this sender
         switch(normalizedText) {
-          case 'sneaker':
-          getArticles(properties.endpoints[2], function(err, articles){
+          case "sneaker":
+          getArticlesOld(properties.endpoints[2], function(err, articles){
             sendGenericMessage(sender, articles);
           });
             break;
 
-          case 'lifestyle':
-            getArticles(properties.endpoints[0], function(err, articles){
+          case "lifestyle":
+            getArticlesOld(properties.endpoints[0], function(err, articles){
               sendGenericMessage(sender, articles);
             });
             break;
 
-          case 'fashion':
-            getArticles(properties.endpoints[1], function(err, articles){
+          case "fashion":
+            getArticlesOld(properties.endpoints[1], function(err, articles){
               sendGenericMessage(sender, articles);
             });
             break;
 
-          case 'HELP':
+          case "hilfe":
             sendTextMessage(sender, "Gib 'sneaker', 'fashion' oder 'lifestyle' ein um nice Artikel darüber zu bekommen! Oder abonniere sogar tägliche News mit /abonnieren | deabonniere mit /deabonnieren und rufe den Status mit /abostatus ab!");
             break;
 
@@ -59,19 +59,9 @@ exports.handleMessage = function(req, res) {
             subscribeStatus(sender)
             break;
           default:
-            _getArticles(function(err, articles) {
-              if (err) {
-                console.log(err);
-              }
-              else if (normalizedText == "showmore") {
-                maxArticles = Math.min(articles.length, 5);
-                for (var i=0; i<maxArticles; i++) {
-                  _sendArticleMessage(sender, articles[i])
-                }
-              } else {
-                _sendArticleMessage(sender, articles[0])
-              }
-             })
+            sendTextMessage(sender, "Damn! Ich weiss nicht, was du mit: "+normalizedText+" meinst! Gib 'hilfe' ein, falls du nicht weiterkommst!")
+            break;
+             
           }
   		}
     }
@@ -225,6 +215,19 @@ function subscribeStatus(id) {
       }
       subscribedText = "Your subscribed status is " + subscribeStatus
       sendTextMessage(id, subscribedText)
+    }
+  })
+}
+function getArticlesOld(endpoints, callback) {
+  rssReader(endpoints, function(err, articles){
+    if(err){
+      callback(err);
+    } else {
+        if(articles.length > 0 ){
+          callback(null, articles);
+        } else {
+          callback("keine artikel bekommen!")
+        }
     }
   })
 }

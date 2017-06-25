@@ -55,11 +55,11 @@ exports.handleMessage = function(req, res) {
           case "/deabonnieren":
             unsubscribeUser(sender)
             break;
-          case "/abonnierstatus":
+          case "/abostatus":
             subscribeStatus(sender)
             break;
           default:
-            sendTextMessage(sender, "Damn! Ich weiss nicht, was du mit: "+normalizedText+" meinst! Gib 'hilfe' ein, falls du nicht weiterkommst!")
+            sendTextMessage(sender, "Damn! Ich weiss nicht, was du mit: '"+normalizedText+"' meinst! Gib 'hilfe' ein, falls du nicht weiterkommst!")
             break;
              
           }

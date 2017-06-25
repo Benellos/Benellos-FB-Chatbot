@@ -12,6 +12,7 @@
     "express": "~4.15.2",
     "feed-read": "0.0.1",
     "jade": "~1.11.0",
+    "mongoose": "^4.11.0",
     "morgan": "~1.8.1",
     "request": "^2.81.0",
     "rss-feed": "0.0.0",

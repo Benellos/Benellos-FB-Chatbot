@@ -6,3 +6,8 @@ exports.facebook_message_endpoint = 'https://graph.facebook.com/v2.6/me/messages
 
 /** News */
 exports.endpoints = ["http://www.highsnobiety.com/category/lifestyle/feed/", "http://www.highsnobiety.com/category/fashion/clothing/feed/", "http://www.highsnobiety.com/category/footwear/feed/"];
+exports.chat_keywords = ["sneaker", "fashion", "lifestyle"];
+
+/** Button Info für Artikel Nachrichten */
+exports.button_link = "";
+exports.button_text = "";

@@ -3,7 +3,6 @@ var request = require('request');
 var rssReader = require('feed-read');
 var properties = require('../config/properties.js')
 
-// if our user.js file is at app/models/user.js
 var User = require('../model/user.js');
 
 
@@ -25,28 +24,27 @@ exports.handleMessage = function(req, res) {
 
         normalizedText = text.toLowerCase().replace(' ', '');
         
-		  	// Handle a text message from this sender
         switch(normalizedText) {
-          case "sneaker":
+          case properties.chat_keywords[0]:
           getArticlesOld(properties.endpoints[2], function(err, articles){
             sendGenericMessage(sender, articles);
           });
             break;
 
-          case "lifestyle":
+          case properties.chat_keywords[2]:
             getArticlesOld(properties.endpoints[0], function(err, articles){
               sendGenericMessage(sender, articles);
             });
             break;
 
-          case "fashion":
+          case properties.chat_keywords[1]:
             getArticlesOld(properties.endpoints[1], function(err, articles){
               sendGenericMessage(sender, articles);
             });
             break;
 
           case "hilfe":
-            sendTextMessage(sender, "Gib 'sneaker', 'fashion' oder 'lifestyle' ein um nice Artikel darüber zu bekommen! Oder abonniere sogar tägliche News mit /abonnieren | deabonniere mit /deabonnieren und rufe den Status mit /abostatus ab!");
+            sendTextMessage(sender, "Gib '"+properties.chat_keywords[0]+"', '"+properties.chat_keywords[1]+"' oder '"+properties.chat_keywords[2]+"' ein um nice Artikel darüber zu bekommen! Oder abonniere sogar tägliche News mit /abonnieren | deabonniere mit /deabonnieren und rufe den Status mit /abostatus ab!");
             break;
 
           case "/abonnieren":
@@ -68,6 +66,8 @@ exports.handleMessage = function(req, res) {
 	res.sendStatus(200);
 }
 function sendGenericMessage(recipientId, articles) {
+  var btnText = properties.button_text;
+  var btnLink = properties.button_link;
   var messageData = {
     recipient: {
       id: recipientId
@@ -87,8 +87,8 @@ function sendGenericMessage(recipientId, articles) {
               title: "Öffne den Artikel"
             }, {
               type: "web_url",
-              url: "http://fvshamm.de",
-              title: "Besuche das Stein!"
+              url: btnLink,
+              title: btnText
             }],
           }, {
             title: articles[1].title,
@@ -100,8 +100,8 @@ function sendGenericMessage(recipientId, articles) {
               title: "Öffne den Artikel"
             }, {
               type: "web_url",
-              url: "http://fvshamm.de",
-              title: "Besuche das Stein!"
+              url: btnLink,
+              title: btnText
             }],
           }, {
             title: articles[2].title,
@@ -113,8 +113,8 @@ function sendGenericMessage(recipientId, articles) {
               title: "Öffne den Artikel"
             }, {
               type: "web_url",
-              url: "http://fvshamm.de",
-              title: "Besuche das Stein!"
+              url: btnLink,
+              title: btnText
             }],
           }, {
             title: articles[3].title,
@@ -126,8 +126,8 @@ function sendGenericMessage(recipientId, articles) {
               title: "Öffne den Artikel"
             }, {
               type: "web_url",
-              url: "http://fvshamm.de",
-              title: "Besuche das Stein!"
+              url: btnLink,
+              title: btnText
             }],
           }, {
             title: articles[4].title,
@@ -139,8 +139,8 @@ function sendGenericMessage(recipientId, articles) {
               title: "Öffne den Artikel"
             }, {
               type: "web_url",
-              url: "http://fvshamm.de",
-              title: "Besuche das Stein!"
+              url: btnLink,
+              title: btnText
             }],
           }, {
             title: articles[5].title,
@@ -152,8 +152,8 @@ function sendGenericMessage(recipientId, articles) {
               title: "Öffne den Artikel"
             }, {
               type: "web_url",
-              url: "http://fvshamm.de",
-              title: "Besuche das Stein!"
+              url: btnLink,
+              title: btnText
             }],
           }, {
             title: articles[6].title,
@@ -165,8 +165,8 @@ function sendGenericMessage(recipientId, articles) {
               title: "Öffne den Artikel"
             }, {
               type: "web_url",
-              url: "http://fvshamm.de",
-              title: "Besuche das Stein!"
+              url: btnLink,
+              title: btnText
             }],
           }]
         }
@@ -177,12 +177,10 @@ function sendGenericMessage(recipientId, articles) {
   callSendAPI(messageData);
 }
 function subscribeUser(id) {
-  // create a new user called chris
   var newUser = new User({
     fb_id: id,
   });
 
-  // call the built-in save method to save to the database
   User.findOneAndUpdate({fb_id: newUser.fb_id}, {fb_id: newUser.fb_id}, {upsert:true}, function(err, user) {
     if (err) {
       sendTextMessage(id, "Da war ein Fehler beim abonnieren!");
@@ -194,7 +192,6 @@ function subscribeUser(id) {
 }
 
 function unsubscribeUser(id) {
-  // call the built-in save method to save to the database
   User.findOneAndRemove({fb_id: id}, function(err, user) {
     if (err) {
       sendTextMessage(id, "Da war ein Fehler beim abonnieren!");
@@ -213,7 +210,7 @@ function subscribeStatus(id) {
       if (user != null) {
         subscribeStatus = true
       }
-      subscribedText = "Your subscribed status is " + subscribeStatus
+      subscribedText = "Dein Abonnement Status ist: " + subscribeStatus
       sendTextMessage(id, subscribedText)
     }
   })
@@ -280,7 +277,6 @@ function callSendAPI(messageData) {
     } else {
       console.log(response.statusCode)
       console.error("Unable to send message.");
-      //console.error(response);
       console.error(error);
     }
   });  
